@@ -899,62 +899,65 @@
                                         unit2.PosNum = unit2.PosNum + ", " + list2[index].left;
                                     }
                                 }
-                                posWithDot[0] = posWithDot[0].Replace(" ", "");
-                                string postNumStr;
-                                str2 = this.getPosWithDot(posWithDot[0], out postNumStr);
-                                int postNum = int.Parse(postNumStr);
-                                List<posUnit> pwdList = new List<posUnit>();
-                                pwdList.Add(new posUnit(posWithDot[0], "", postNum));
-                                index = 1;
-                                while (index < posWithDot.Count)
+                                if (posWithDot.Count > 0)
                                 {
-                                    if (posWithDot[index] != "")
+                                    posWithDot[0] = posWithDot[0].Replace(" ", "");
+                                    string postNumStr;
+                                    str2 = this.getPosWithDot(posWithDot[0], out postNumStr);
+                                    int postNum = int.Parse(postNumStr);
+                                    List<posUnit> pwdList = new List<posUnit>();
+                                    pwdList.Add(new posUnit(posWithDot[0], "", postNum));
+                                    index = 1;
+                                    while (index < posWithDot.Count)
                                     {
-                                        posWithDot[index] = posWithDot[index].Replace(" ", "");
-                                        if (posWithDot[index].Length > 2)
+                                        if (posWithDot[index] != "")
                                         {
-                                            string present = this.getPosWithDot(posWithDot[index], out postNumStr);
-                                            postNum = int.Parse(postNumStr);
-                                            string postNumStr1;
-                                            string past = this.getPosWithDot(pwdList[pwdList.Count - 1].left, out postNumStr1);
-                                            if ((present == past) && (postNum == (pwdList[pwdList.Count - 1].lastNum + 1)))
+                                            posWithDot[index] = posWithDot[index].Replace(" ", "");
+                                            if (posWithDot[index].Length > 2)
                                             {
-                                                unit = pwdList[pwdList.Count - 1];
-                                                unit.right = posWithDot[index];
-                                                unit.lastNum = postNum;
-                                                pwdList[pwdList.Count - 1] = unit;
+                                                string present = this.getPosWithDot(posWithDot[index], out postNumStr);
+                                                postNum = int.Parse(postNumStr);
+                                                string postNumStr1;
+                                                string past = this.getPosWithDot(pwdList[pwdList.Count - 1].left, out postNumStr1);
+                                                if ((present == past) && (postNum == (pwdList[pwdList.Count - 1].lastNum + 1)))
+                                                {
+                                                    unit = pwdList[pwdList.Count - 1];
+                                                    unit.right = posWithDot[index];
+                                                    unit.lastNum = postNum;
+                                                    pwdList[pwdList.Count - 1] = unit;
+                                                }
+                                                else
+                                                {
+                                                    pwdList.Add(new posUnit(posWithDot[index], "", postNum));
+                                                }
                                             }
-                                            else
+                                            else if (posWithDot[index] != pwdList[pwdList.Count - 1].left)
                                             {
-                                                pwdList.Add(new posUnit(posWithDot[index], "", postNum));
+                                                pwdList.Add(new posUnit(posWithDot[index], "", 0));
                                             }
                                         }
-                                        else if (posWithDot[index] != pwdList[pwdList.Count - 1].left)
-                                        {
-                                            pwdList.Add(new posUnit(posWithDot[index], "", 0));
-                                        }
+                                        index++;
                                     }
-                                    index++;
-                                }
-                                unit2 = this.Units[i];
-                                if (pwdList[0].right != string.Empty)
-                                {
-                                    unit2.PosNum = pwdList[0].left + "-" + pwdList[0].right;
-                                }
-                                else
-                                {
-                                    unit2.PosNum = pwdList[0].left;
-                                }
-                                for (index = 1; index < pwdList.Count; index++)
-                                {
-                                    if (pwdList[index].right != string.Empty)
+                                    unit2 = this.Units[i];
+                                    if (pwdList[0].right != string.Empty)
                                     {
-                                        posNum = unit2.PosNum;
-                                        unit2.PosNum = posNum + ", " + pwdList[index].left + "-" + pwdList[index].right;
+                                        unit2.PosNum = pwdList[0].left + "-" + pwdList[0].right;
                                     }
                                     else
                                     {
-                                        unit2.PosNum = unit2.PosNum + ", " + pwdList[index].left;
+                                        unit2.PosNum = pwdList[0].left;
+                                    }
+                                    for (index = 1; index < pwdList.Count; index++)
+                                    {
+                                        if (pwdList[index].right != string.Empty)
+                                        {
+                                            posNum = unit2.PosNum;
+                                            unit2.PosNum = posNum + ", " + pwdList[index].left + "-" + pwdList[index].right;
+                                        }
+                                        else
+                                        {
+                                            unit2.PosNum = unit2.PosNum + ", " + pwdList[index].left;
+                                        }
                                     }
                                 }
                                 this.Units[i] = unit2;
